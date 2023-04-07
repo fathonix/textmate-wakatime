@@ -7,12 +7,10 @@
 #import "NSWindow+KKSwizzle.h"
 
 static NSString *VERSION = @"1.1.0";
-static NSString *TEXTMATE_VERSION = nil;
-static NSString *TEXTMATE_BUILD = nil;
 static NSString *WAKATIME_INSTALL_SCRIPT = @"Library/Application Support/TextMate/PlugIns/WakaTime.tmplugin/Contents/Resources/install_dependencies.sh";
 static NSString *WAKATIME_CLI = @".wakatime/wakatime-cli";
 static NSString *CONFIG_FILE = @".wakatime.cfg";
-static int FREQUENCY = 2;  // minutes
+static int FREQUENCY = 15;  // seconds
 
 
 @implementation WakaTime
@@ -37,8 +35,6 @@ static CFAbsoluteTime _lastTime;
         
         // Set runtime constants
         CONFIG_FILE = [NSHomeDirectory() stringByAppendingPathComponent:CONFIG_FILE];
-        TEXTMATE_VERSION = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-        TEXTMATE_BUILD = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
         
         // check for wakatime cli
         NSString *cli = [NSHomeDirectory() stringByAppendingPathComponent:WAKATIME_CLI];
@@ -149,10 +145,11 @@ static CFAbsoluteTime _lastTime;
 
 + (void)handleEditorAction:(NSString*)currentFile isWrite:(bool)isWrite {
     CFAbsoluteTime currentTime = CFAbsoluteTimeGetCurrent();
-    if (currentFile && (isWrite || ![_lastFile isEqualToString:currentFile] || _lastTime + FREQUENCY * 30 < currentTime)) {
+    if (![_lastFile isEqualToString:currentFile] || _lastTime + FREQUENCY < currentTime) {
         _lastFile = currentFile;
         _lastTime = currentTime;
-        [self sendHeartbeat:isWrite];
+        if (![_lastFile isEqualToString:@""])
+            [self sendHeartbeat:isWrite];
     }
 }
 
@@ -165,10 +162,10 @@ static CFAbsoluteTime _lastTime;
     //[arguments addObject:@"--verbose"];
     [arguments addObject:@"--entity"];
     [arguments addObject:_lastFile];
-    [arguments addObject:@"--time"];
-    [arguments addObject:@(_lastTime).stringValue];
+    [arguments addObject:@"--project"];
+    [arguments addObject:@"TextMate"];
     [arguments addObject:@"--plugin"];
-    [arguments addObject:[NSString stringWithFormat:@"textmate/%@-%@ textmate-wakatime/%@", TEXTMATE_VERSION, TEXTMATE_BUILD, VERSION]];
+    [arguments addObject:[NSString stringWithFormat:@"textmate-wakatime/%@", VERSION]];
     if (isWrite)
         [arguments addObject:@"--write"];
     [task setArguments: arguments];
