@@ -6,7 +6,7 @@ Quantify your coding inside TextMate 1 & 2.
 Installation
 ------------
 
-1. Download [textmate-wakatime-v1.0.2.tmplugin](https://github.com/wakatime/textmate-wakatime/releases/download/1.0.2/textmate-wakatime-v1.0.2.tmplugin.zip)
+1. Download [textmate-wakatime-v1.1.0-beta2.tmplugin.zip](https://github.com/fathonix/textmate-wakatime/releases/download/v1.1.0-beta2/textmate-wakatime-v1.1.0-beta2.tmplugin.zip)
 
 2. Unzip and open the downloaded tmplugin file to install the plugin in TextMate.
 
@@ -34,7 +34,7 @@ Troubleshooting
 Try running this Terminal command:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/wakatime/textmate-wakatime/master/install_dependencies.sh | sh
+curl -fsSL https://raw.githubusercontent.com/fathonix/textmate-wakatime/master/install_dependencies.sh | sh
 ```
 
 That will re-download the [wakatime-cli dependency](https://github.com/wakatime/wakatime).
