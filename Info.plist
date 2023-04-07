@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleVersion</key>
-	<string>1.0.2</string>
+	<string>1.1.0</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -37,7 +37,7 @@
 	<key>DTXcodeBuild</key>
 	<string>4H1503</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2015 WakaTime. All rights reserved.</string>
+	<string>Copyright © 2015 WakaTime © 2023 Aldo Adirajasa Fathoni. All rights reserved.</string>
 	<key>TMPlugInAPIVersion</key>
 	<integer>2</integer>
 	<key>BuildMachineOSBuild</key>
