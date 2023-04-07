@@ -41,7 +41,7 @@
     if (event.type == NSKeyDown) {
         //NSLog(@"%s", _cmd);
         NSString *file = [WakaTime getFileForWindow:self.windowNumber];
-        [WakaTime handleEditorAction:file isWrite:false];
+        [WakaTime handleEditorAction:file isWrite:true];
     }
     [self xxx_sendEvent:event];
 }
