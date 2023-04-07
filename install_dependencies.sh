@@ -11,22 +11,36 @@
 set -e
 set -x
 
-url="https://codeload.github.com/wakatime/wakatime/zip/master"
-extract_to="$HOME/Library/Application Support/TextMate/PlugIns/WakaTime.tmplugin/Contents/Resources"
-zip_file="$extract_to/legacy-python-cli-master.zip"
-installed_package="$extract_to/legacy-python-cli-master"
-
-if [ -d "$installed_package" ]; then
-    rm -rf "$installed_package"
+if [ "$(uname -m)" = "arm64" ]; then
+    arch="arm64"
+elif [ "$(uname -m)" = "x86_64" ]; then
+    arch="amd64"
 fi
+
+basename="wakatime-cli"
+filename="${basename}-darwin-${arch}"
+zip_file="${filename}.zip"
+url="https://github.com/wakatime/wakatime-cli/releases/latest/download/${zip_file}"
+extract_to="${HOME}/.wakatime"
+old_package="${HOME}/Library/Application Support/TextMate/PlugIns/WakaTime.tmplugin/Contents/Resources/legacy-python-cli-master"
 
 cd "$extract_to"
 
-echo "Downloading wakatime-cli package to $zip_file ..."
-curl "$url" -o "$zip_file"
+echo "Deleting old packages ..."
+if [ -d "$old_package" ]; then
+    rm -rf "$old_package"
+fi
 
-echo "Unzipping wakatime-cli to $installed_package ..."
+if [ -f "$filename" ]; then
+    rm -rf "$filename"
+fi
+
+echo "Downloading wakatime-cli package to $extract_to ..."
+curl -LO "$url"
+
+echo "Unzipping wakatime-cli to $extract_to ..."
 unzip -o "$zip_file"
+ln -sf "$filename" "$basename"
 
 rm "$zip_file"
 
