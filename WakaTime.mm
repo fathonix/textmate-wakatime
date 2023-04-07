@@ -10,7 +10,7 @@ static NSString *VERSION = @"1.0.2";
 static NSString *TEXTMATE_VERSION = nil;
 static NSString *TEXTMATE_BUILD = nil;
 static NSString *WAKATIME_INSTALL_SCRIPT = @"Library/Application Support/TextMate/PlugIns/WakaTime.tmplugin/Contents/Resources/install_dependencies.sh";
-static NSString *WAKATIME_CLI = @"Library/Application Support/TextMate/PlugIns/WakaTime.tmplugin/Contents/Resources/wakatime-master/wakatime/cli.py";
+static NSString *WAKATIME_CLI = @".wakatime/wakatime-cli";
 static NSString *CONFIG_FILE = @".wakatime.cfg";
 static int FREQUENCY = 2;  // minutes
 
@@ -149,7 +149,7 @@ static CFAbsoluteTime _lastTime;
 
 + (void)handleEditorAction:(NSString*)currentFile isWrite:(bool)isWrite {
     CFAbsoluteTime currentTime = CFAbsoluteTimeGetCurrent();
-    if (currentFile && (isWrite || ![_lastFile isEqualToString:currentFile] || _lastTime + FREQUENCY * 60 < currentTime)) {
+    if (currentFile && (isWrite || ![_lastFile isEqualToString:currentFile] || _lastTime + FREQUENCY * 30 < currentTime)) {
         _lastFile = currentFile;
         _lastTime = currentTime;
         [self sendHeartbeat:isWrite];
@@ -160,17 +160,19 @@ static CFAbsoluteTime _lastTime;
     //NSLog(@"%@", _lastFile);
     NSString *cli = [NSHomeDirectory() stringByAppendingPathComponent:WAKATIME_CLI];
     NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath: @"/usr/bin/python"];
+    [task setLaunchPath: cli];
     NSMutableArray *arguments = [NSMutableArray array];
-    [arguments addObject:cli];
     //[arguments addObject:@"--verbose"];
-    [arguments addObject:@"--file"];
+    [arguments addObject:@"--entity"];
     [arguments addObject:_lastFile];
+    [arguments addObject:@"--time"];
+    [arguments addObject:@(_lastTime).stringValue];
     [arguments addObject:@"--plugin"];
     [arguments addObject:[NSString stringWithFormat:@"textmate/%@-%@ textmate-wakatime/%@", TEXTMATE_VERSION, TEXTMATE_BUILD, VERSION]];
     if (isWrite)
         [arguments addObject:@"--write"];
     [task setArguments: arguments];
+    NSLog(@"%@ %@", cli, arguments);
     [task launch];
 }
 @end
